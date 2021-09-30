@@ -4,11 +4,24 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Session Storage Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <title>Storage Blaster</title>
 </head>
 <body>
-    <h1>Session Storage Test</h1>
+    <header>
+        <h1>Storage Blaster</h1>
+        <h2>Current size: <b id="size"></b></h2>
+        <h3>
+            Writing a
+            <input type="number" id="length" value="5000" step="1000">
+            length string every
+            <input type="number" id="interval" value="500" step="100"/>
+            ms
+        </h3>
+    </header>
+
     <pre id="dump"></pre>
+
     <script src="./script.js"></script>
 </body>
 </html>

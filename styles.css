@@ -1,0 +1,20 @@
+body {
+    max-width: 50rem;
+    margin: 0 auto;
+}
+header {
+    position: sticky;
+    top: 0;
+    background: white;
+}
+h1 {
+    text-align: center;
+}
+input {
+    width: 50px;
+}
+pre {
+    background: #eaeaea;
+    padding: 15px;
+    border-radius: 4px;
+}
