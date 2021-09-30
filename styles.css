@@ -1,6 +1,10 @@
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     max-width: 50rem;
     margin: 0 auto;
+    padding: 15px;
 }
 header {
     position: sticky;
@@ -10,8 +14,14 @@ header {
 h1 {
     text-align: center;
 }
+h2, h3 {
+    font-weight: normal;
+}
 input {
     width: 50px;
+}
+main {
+    flex-grow: 1;
 }
 pre {
     background: #eaeaea;
