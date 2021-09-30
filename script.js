@@ -4,10 +4,10 @@ let debugEl = document.getElementById("dump")
 setInterval(function() {
     setRandomSessionStorage()
     displaySessionStorage()
-}, 500)
+}, 50)
 
 function setRandomSessionStorage() {
-    const random = getRandomString(1000)
+    const random = getRandomString(5000)
     window.sessionStorage.setItem(counter.toString(), random)
     counter++
 }
