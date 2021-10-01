@@ -4,7 +4,70 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧨</text></svg>">
+    <style>
+        html {
+            background: snow;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            max-width: 50rem;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        header {
+            background: linen;
+            position: sticky;
+            top: 0;
+        }
+        header, pre, footer {
+            padding: 15px;
+            border-radius: 4px;
+
+        }
+        h1 {
+            text-align: center;
+        }
+        h2, h3 {
+            font-weight: normal;
+        }
+        input[type='number'] {
+            width: 50px;
+            height: 13px;
+        }
+        input[type='checkbox'] {
+            vertical-align: middle;
+        }
+        .checkbox-label {
+            padding: 0px 5px 3px 9px;
+            display: inline-block;
+            border-radius: 4px;
+            background: burlywood;
+            margin-left: 1px;
+        }
+        .checkbox-label:hover {
+            outline: 1px solid saddlebrown;
+        }
+        .divider {
+            color: lightslategrey;
+            margin: 0 5px;
+        }
+        main {
+            flex-grow: 1;
+        }
+        pre {
+            background: whitesmoke;
+        }
+        footer {
+            text-align: center;
+            background: lightgray;
+        }
+        a {
+            color: firebrick;
+        }
+    </style>
     <title>Storage Blaster</title>
 </head>
 <body>
@@ -13,10 +76,20 @@
         <h2>Current size: <b id="size"></b></h2>
         <h3>
             Writing a
-            <input type="number" id="length" value="5000" step="1000">
-            character string to session storage every
-            <input type="number" id="interval" value="500" step="100"/>
-            ms
+            <label>
+                <input type="number" id="length" name="length" value="5000" step="500" min="1">
+                character
+            </label>
+            string to session storage every
+            <label>
+                <input type="number" id="interval" name="interval" value="500" step="50" min="1"/>
+                ms
+            </label>
+            <span class="divider">|</span>
+            <label class="checkbox-label">
+                paused
+                <input type="checkbox" id="paused" name="paused">
+            </label>
         </h3>
     </header>
 
@@ -25,9 +98,88 @@
     </main>
 
     <footer>
-        <p>For running tests on session storage capacity | <a href="https://github.com/KyleMit/session-storage-test">github</a></p>
+        <p>
+            For running tests on session storage capacity
+            <span class="divider">|</span>
+            <a href="https://github.com/KyleMit/session-storage-test">github</a>
+        </p>
     </footer>
 
-    <script src="./script.js"></script>
+    <script>
+        let counter = 0;
+        let dumpEl = document.getElementById("dump")
+        let sizeEl = document.getElementById("size")
+        let lengthEl = document.getElementById("length")
+        let intervalEl = document.getElementById("interval")
+        let pausedEl = document.getElementById("paused")
+
+        main()
+
+        function main() {
+            setTimeout(function() {
+                if (!pausedEl.checked) {
+                    setRandomSessionStorage()
+                    displaySessionStorage()
+                    displaySize()
+                }
+
+                // rerun
+                main()
+            }, Number(intervalEl.value))
+        }
+
+        function setRandomSessionStorage() {
+            const random = getRandomString(Number(lengthEl.value))
+            window.sessionStorage.setItem(counter.toString(), random)
+            counter++
+        }
+
+        function getRandomString(len) {
+            return new Array(len).join().replace(/(.|$)/g, getRandomChar)
+        }
+
+        function getRandomChar(){
+            return ((Math.random()*36)|0).toString(36);
+        }
+
+        function displaySessionStorage() {
+            const obj = getSessionStorage()
+            const str = JSON.stringify(obj, null, 2)
+            dumpEl.innerText = str;
+
+        }
+
+        function getSessionStorage() {
+            return Object.keys(sessionStorage).reduce(function(obj, key) {
+                let val = sessionStorage.getItem(key);
+                let len = val.length;
+                let str = len > 5 ? val.substring(0, 5) + ' (+' + (len - 5) + ')' : val
+                obj[key] = str;
+                return obj
+            }, {});
+        }
+
+
+        function displaySize() {
+            const lengths = Object.values(sessionStorage).map(function(str) {return str.length})
+            const totalLength = sum(lengths)
+            const bytes = totalLength * 2
+
+            if (bytes / 1024 < 1) {
+                sizeEl.innerText = bytes + " bytes"
+            } else if (bytes / 1024 / 1024 < 1) {
+                sizeEl.innerText = (bytes / 1024).toFixed(2) + " kb"
+            } else {
+                sizeEl.innerText = (bytes / 1024 / 1024).toFixed(2) + " mb"
+            }
+        }
+
+        function sum(arr) {
+            return arr.reduce(function(a, b) {
+                return a + b
+            }, 0);
+        }
+
+    </script>
 </body>
 </html>
